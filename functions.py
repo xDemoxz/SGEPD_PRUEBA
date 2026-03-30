@@ -28,7 +28,7 @@ def show_menu():
                 program = pedir_plan()
                 status = pedir_estado()
             
-                student = register_student(id, name, age, program, status)
+                student = register_student(students, id, name, age, program, status)
                 add_student(students, student)
                 save_students(students)
 
@@ -39,12 +39,16 @@ def show_menu():
             id = pedir_entero("Enter your ID: ")
             result = find_student(students,id)
             if result is not None:
-                print(f"ID: {result['id']} | name: {result['name']} | Edad: {result['age']} | Program: {result['Program']} | Status: {result['status']} ")
+                print(f"ID: {result['id']} | name: {result['name']} | Edad: {result['age']} | Program: {result['program']} | Status: {result['status']} ")
             else:
                 print("El ID no ha sido registrado antes.")
 
         elif option =="4":
             id = pedir_entero("Digite el ID a actualizar: ")
+            result= find_student(students, id)
+            if result is None:
+                print("ID no encontrado.")
+                continue
             new_name = input("Digite su nuevo nombre: ")
             new_age = pedir_entero("Digite su nueva edad: ")
             new_program = pedir_plan()
@@ -57,7 +61,6 @@ def show_menu():
         elif option =="5":
             id = pedir_entero("Digite ID del cliente a eliminar: ")
             delete_student(students,id)
-            save_students(students)                             
         elif option =="6":
             print("\nHASTA LUEGO!!!")
             break
@@ -101,17 +104,15 @@ def find_student(students, id, ):
         return None        
 
 
-def update_student(stundets,id, new_name, new_age, new_program, new_status):
+def update_student(students,id, new_name, new_age, new_program, new_status):
     student = find_student(students, id)
 
     if student is not None:
-        students['new_name'] = new_name
-        students['new_age'] = new_age
-        students['program'] = new_program
-        students['new_satus'] = new_status
+        student['name'] = new_name
+        student['age'] = new_age
+        student['program'] = new_program
+        student['status'] = new_status
         print("Student updated.")
-    else:
-        print("Student not found.")
 
 
 def delete_student(students, id):
@@ -119,13 +120,13 @@ def delete_student(students, id):
     student = find_student(students,id)
 
     if student is not None:
-        student.remove(students)
+        students.remove(student)
         print(f"Student '{student['name']}' of '{student['id']}' ID have been deleted.")  
     else:
         print("Student have not found.")  
 
 
-def save_students():
+def save_students(students):
     with open("students.json", "w") as f:
         json.dump(students,f, indent=4)
 
